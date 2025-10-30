@@ -1,0 +1,25 @@
+# data & weights
+data/
+datasets/
+*.nii
+*.nii.gz
+*.pt
+*.pth
+*.ckpt
+*.npz
+*.npy
+
+# logs & outputs
+outputs/
+runs/
+wandb/
+logs/
+
+# cache
+__pycache__/
+*.ipynb_checkpoints
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
