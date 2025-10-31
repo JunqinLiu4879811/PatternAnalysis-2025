@@ -31,8 +31,8 @@ def main():
     val_ds   = HipMRI2DSlices(args.data, "val",
                               target_size=(args.size, args.size),
                               prostate_id=args.prostate_id)
-    train_ld = DataLoader(train_ds, batch_size=args.batch, shuffle=True, num_workers=2, pin_memory=True)
-    val_ld   = DataLoader(val_ds,   batch_size=args.batch, shuffle=False, num_workers=2, pin_memory=True)
+    train_ld = DataLoader(train_ds, batch_size=args.batch, shuffle=True, num_workers=0, pin_memory=False)
+    val_ld   = DataLoader(val_ds,   batch_size=args.batch, shuffle=False, num_workers=0, pin_memory=False)
 
     net = UNet(1, 1).to(device)
     opt = torch.optim.Adam(net.parameters(), lr=args.lr)
