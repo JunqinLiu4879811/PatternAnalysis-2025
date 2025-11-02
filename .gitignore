@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # data & weights
 data/
 datasets/
@@ -26,3 +27,30 @@ Thumbs.db
 
 vis/
 outputs/
+=======
+# data & weights
+data/
+datasets/
+*.nii
+*.nii.gz
+*.pt
+*.pth
+*.ckpt
+*.npz
+*.npy
+
+# logs & outputs
+outputs/
+runs/
+wandb/
+logs/
+
+# cache
+__pycache__/
+*.ipynb_checkpoints
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+>>>>>>> c7ba1cd (feat(unet_hipmri2d): local GPU run cmds & pairing fix; docs: data path)

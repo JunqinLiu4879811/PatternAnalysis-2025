@@ -40,23 +40,25 @@ def _stem_noext(p: Path) -> str:
 
 def _canonical_key(p: Path) -> str:
     """
-    Build a robust pairing key from filename.
-    Strategy:
-      - If pattern like "<SUBJ>_Week<k>_..." exists, use "SUBJ_Week<k>".
-      - Otherwise, drop common suffix tokens and keep the first 2 tokens.
+    Robust pair key:
+    - If any token starts with 'Week', use everything up to that token, e.g.
+      'Case_004_Week0', 'B006_Week1'.
+    - Else fallback: drop common suffix tokens and keep first two tokens.
     """
     s = _stem_noext(p)
     toks = s.split("_")
-    # case 1: subject_week at the beginning
-    if len(toks) >= 2 and toks[1].lower().startswith("week"):
-        return f"{toks[0]}_{toks[1]}"
-    # fallback: drop common suffix tokens and keep first two
+    # WeekK 可以在任意位置，比如 Case_004_Week0_...
+    for j, t in enumerate(toks):
+        if t.lower().startswith("week"):
+            return "_".join(toks[:j+1])  # -> Case_004_Week0 / B006_Week0
+    # 兜底（保持你原来的逻辑）
     drop = {"semantic", "sem", "label", "labels", "mr", "mri", "img", "image",
             "t1", "t2", "flair", "hr", "lr", "seg", "segmentation"}
     core = [t for t in toks if t.lower() not in drop]
     if len(core) >= 2:
         return f"{core[0]}_{core[1]}"
     return core[0] if core else s
+
 
 
 class HipMRI2DSlices(Dataset):
