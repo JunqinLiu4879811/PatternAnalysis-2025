@@ -5,6 +5,8 @@ from torch.utils.data import DataLoader
 
 from recognition.unet_hipmri2d_48798112.dataset import HipMRI2DSlices
 from recognition.unet_hipmri2d_48798112.modules import UNet
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+
 
 def dice_loss_from_logits(logits, target, eps: float = 1e-6):
     import torch
@@ -53,6 +55,8 @@ def main():
 
     net = UNet(in_ch=1, out_ch=1).to(device)
     opt = torch.optim.Adam(net.parameters(), lr=args.lr)
+    sched = ReduceLROnPlateau(opt, mode='max', factor=0.5, patience=2, min_lr=1e-5, verbose=True)
+
 
     best = -1.0
     print(f"device={device} train_slices={len(train_ds)} val_slices={len(val_ds)}", flush=True)
@@ -86,6 +90,10 @@ def main():
                     break
         vdice = s / max(1, c)
         print(f"[epoch {ep}] val dice={vdice:.4f}", flush=True)
+
+        sched.step(vdice)
+        print(f"lr now = {opt.param_groups[0]['lr']:.2e}", flush=True)
+
         if vdice > best:
             best = vdice
             torch.save({"state_dict": net.state_dict(), "dice": best}, os.path.join(args.out, "best.ckpt"))
